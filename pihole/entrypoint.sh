@@ -18,3 +18,6 @@ else
     #non-zero exit code to fail the container startup
     exit 1
 fi
+
+#run the container startup script
+exec /usr/bin/start.sh
