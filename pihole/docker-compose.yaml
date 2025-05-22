@@ -2,7 +2,7 @@
 services:
   pihole:
     container_name: pihole
-    image: mypihole:latest
+    image: mypihole:latest #put the tag of the custom pihole image buit from the dockerfile
     ports:
       # DNS Ports
       - "53:53/tcp"
