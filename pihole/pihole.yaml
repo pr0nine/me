@@ -17,7 +17,7 @@ spec:
       containers:
       - name: pihole
         imagePullPolicy: Never
-        image: mepihole:latest
+        image: mepihole:latest #put the tag of the custom pihole image buit from the dockerfile
         ports:
         - containerPort: 80
           name: web
