@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pihole
+spec:
+  selector:
+    matchLabels:
+      app: pihole # has to match .spec.template.metadata.labels 
+  replicas: 1 # by default is 1
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: pihole # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: pihole
+        imagePullPolicy: Never
+        image: mepihole:latest
+        ports:
+        - containerPort: 80
+          name: web
+          protocol: TCP
+          hostPort: 8080
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+          hostPort: 53
+        - containerPort: 53
+          name: dns-udp
+          protocol: UDP
+          hostPort: 53
+        - containerPort: 443
+          name: sweb
+          protocol: TCP
+          hostPort: 8443
+        env:
+        - name: TZ
+          value: "Asia/Kolkata"
+        - name: FTLCONF_webserver_api_password
+          value: "yourpasswd"
+        - name: FTLCONF_dns_listeningMode
+          value: "all"
+        volumeMounts:
+        - name: pihole
+          mountPath: /etc/pihole
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add:
+            - CAP_SYS_NICE
+  volumeClaimTemplates:
+  - metadata:
+      name: pihole
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local-path"
+      resources:
+        requests:
+          storage: 1Gi
