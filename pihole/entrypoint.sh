@@ -14,5 +14,8 @@ else
     exit 1
 fi
 
+#comment out below line if only using for docker 
+echo $'search home\nnameserver 127.0.0.1' >> /etc/resolv.conf
+
 #run the container startup script
 exec /usr/bin/start.sh
