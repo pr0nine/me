@@ -42,6 +42,8 @@ spec:
           value: "yourpasswd"
         - name: FTLCONF_dns_listeningMode
           value: "all"
+        - name: FTLCONF_dns_upstreams #setting unbound as upstream dns server
+          value: "127.0.0.1#5335"
         volumeMounts:
         - name: pihole
           mountPath: /etc/pihole
