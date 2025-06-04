@@ -1,0 +1,21 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n-ingress
+  namespace: default
+  annotations:
+#    traefik.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: "traefik"
+  rules:
+  - host: "*.example.net" #wildcard hostname to pass all traffic ending in .example.net
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-svc
+            port:
+              number: 8090
