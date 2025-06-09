@@ -141,4 +141,4 @@ spec:
   clusterIP: None
   selector:
     app: postgres
-# CREATE USER repliuser REPLICATION LOGIN PASSWORD 'admin'; use this to create replication user inside postgres container, first connect with 'psql -U postgres' switch postgres with username from secret
+# CREATE USER <username> REPLICATION LOGIN PASSWORD 'passwd'; use this to create replication user inside postgres container, first connect with 'psql -U postgres' switch postgres with username from secret
