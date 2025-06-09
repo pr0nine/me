@@ -77,7 +77,7 @@ spec:
         - name: data
           mountPath: /data
           readOnly: false
-      containers:
+      containers: # <----------------------main container
       - name: postgres
         image: postgres:15.13-alpine3.22
         args: ["-c", "config_file=/config/postgresql.conf"]
@@ -107,16 +107,16 @@ spec:
               optional: false
         volumeMounts:
         - name: config
-          mountPath: /config
+          mountPath: /config #config mount is mounted inside the container
           readOnly: false
         - name: data
           mountPath: /data
           readOnly: false
       volumes:
-      - name: config
+      - name: config #the configMap is mounted in the pod as config
         configMap:
           name: postgres
-          defaultMode: 0755
+          defaultMode: 0755 #octal permission for the mounted config_file 4=read,2=write,1=execute
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -138,7 +138,7 @@ spec:
   - port: 5432
     targetPort: 5432
     name: postgres
-  clusterIP: None
+  clusterIP: None #headless service, as a result, doesn't provide load balancing,it exposes the individual pods directly
   selector:
     app: postgres
 # CREATE USER <username> REPLICATION LOGIN PASSWORD 'passwd'; use this to create replication user inside postgres container, first connect with 'psql -U postgres' switch postgres with username from secret
