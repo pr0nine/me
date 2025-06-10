@@ -1,6 +1,6 @@
 # kubectl create configmap nginx --from-file=./nginx.conf
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: nginx-r-p
   labels:
