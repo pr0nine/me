@@ -1,0 +1,55 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: trilium
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: trilium # has to match .spec.template.metadata.labels
+  serviceName: "trilium"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container:  trilium
+      labels:
+        app: trilium # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: trilium
+        image: zadam/trilium:latest
+        env:
+        - name: TRILIUM_PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /home/node/trilium-data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local-path"
+      resources:
+        requests:
+          storage: 8Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trilium
+  labels:
+    app: trilium
+spec:
+  ports:
+  - port: 8094
+    targetPort: 8080
+    name: http
+  selector:
+    app: trilium
