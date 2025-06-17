@@ -1,0 +1,75 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wallabag
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: wallabag # has to match .spec.template.metadata.labels
+  serviceName: "wallabag"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container:  wallabag
+      labels:
+        app: wallabag # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: wallabag
+        image: wallabag/wallabag:latest
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "admin123"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: SYMFONY__ENV__DATABASE_DRIVER
+          value: "pdo_pgsql"
+        - name: SYMFONY__ENV__DATABASE_HOST
+          value: "postgres"
+        - name: SYMFONY__ENV__DATABASE_PORT
+          value: "5432"
+        - name: SYMFONY__ENV__DATABASE_NAME
+          value: "wallabag"
+        - name: SYMFONY__ENV__DATABASE_USER
+          value: "wallabag"
+        - name: SYMFONY__ENV__DATABASE_PASSWORD
+          value: "wallapass"
+        - name: SYMFONY__ENV__DOMAIN_NAME
+          value: "http://walla.pro.net"
+        - name: POPULATE_DATABASE
+          value: "False"
+        - name: mailer_dsn
+          value: "smtp://127.0.0.1"
+        volumeMounts:
+        - name: walladata
+          mountPath: /var/www/wallabag/web/assets/images/
+  volumeClaimTemplates:
+  - metadata:
+      name: walladata
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local-path"
+      resources:
+        requests:
+          storage: 8Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallabag
+  labels:
+    app: wallabag
+spec:
+  ports:
+  - port: 8094
+    targetPort: 80
+    name: http
+  selector:
+    app: wallabag
