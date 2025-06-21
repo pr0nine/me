@@ -73,6 +73,20 @@ spec:
         - |
           #create archive directory
           mkdir -p /data/archive && chown -R 999:999 /data/archive
+          echo "CREATE USER ${REPLICATION_USER} REPLICATION LOGIN ENCRYPTED PASSWORD '${REPLICATION_PASSWORD}';" > /docker-entrypoint-initdb.d/init.sql
+        env:
+        - name: REPLICATION_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: REPLICATION_USER
+              optional: false
+        - name: REPLICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: REPLICATION_PASSWORD
+              optional: false
         volumeMounts:
         - name: data
           mountPath: /data
