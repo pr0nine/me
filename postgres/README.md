@@ -72,3 +72,15 @@ kubectl apply -f postgres-1.yaml
 ```
 
 use previous steps to exec into the postgres-1-0 container and check for the test table if present, replication is successfull!
+
+if the primary postgres instance fails we can promote the readonly secondary instance as primary, exec into the secondary instance, switch user to superuser of postgres for me it is postgres
+
+```text-x-sh
+su postgres
+```
+
+use pg\_ctl to promote by
+
+```text-x-sh
+pg_ctl promote
+```
