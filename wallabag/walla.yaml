@@ -25,10 +25,18 @@ spec:
         - containerPort: 80
           name: http
         env:
-        - name: POSTGRES_PASSWORD
-          value: "admin123"
         - name: POSTGRES_USER
-          value: "postgres"
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: POSTGRES_USER
+              optional: false
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: POSTGRES_PASSWORD
+              optional: false
         - name: SYMFONY__ENV__DATABASE_DRIVER
           value: "pdo_pgsql"
         - name: SYMFONY__ENV__DATABASE_HOST
