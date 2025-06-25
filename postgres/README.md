@@ -1,3 +1,6 @@
+postgres
+--------
+
 first create the secret after swapping with your desired credentials in it 
 
 ```text-x-sh
@@ -83,4 +86,40 @@ use pg\_ctl to promote by
 
 ```text-x-sh
 pg_ctl promote
+```
+
+adminer
+-------
+
+a web-based, open-source database management tool written in PHP
+
+i am using a theme for adminer to apply it, first download the css file
+
+```text-x-sh
+curl https://raw.githubusercontent.com/Niyko/Hydra-Dark-Theme-for-Adminer/refs/heads/master/adminer.css > adminer.css
+```
+
+ create a configmap from it 
+
+```text-x-sh
+kubectl create configmap adminer --from-file=./adminer.css
+```
+
+if not using the theme just remove the configmap volume and volumemounts from `adminer.yaml`
+
+```text-x-yaml
+volumeMounts:
+        - name: theme
+          mountPath: /var/www/html/adminer.css
+          subPath: adminer.css
+      volumes:
+        - name: theme
+          configMap:
+            name: adminer
+```
+
+now apply the adminer manifest
+
+```text-x-sh
+kubectl apply -f adminer.yaml
 ```
