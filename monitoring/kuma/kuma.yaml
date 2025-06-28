@@ -1,0 +1,52 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kuma
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: kuma # has to match .spec.template.metadata.labels
+  serviceName: "kuma"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: kuma
+      labels:
+        app: kuma # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: kuma
+        image: louislam/uptime-kuma:alpine
+        ports:
+        - containerPort: 3001
+          name: http
+        volumeMounts:
+        - name: kuma-data
+          mountPath: /app/data
+  volumeClaimTemplates:
+  - metadata:
+      name: kuma-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local-path"
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kuma
+  labels:
+    app: kuma
+spec:
+  ports:
+  - port: 8095
+    targetPort: 3001
+    name: http
+  selector:
+    app: kuma
