@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: kube-system
+  name: prometheus-k-s-m
+  labels:
+    app: prometheus
+spec:
+  endpoints:
+  - interval: 30s
+    port: http-metrics #scrapes the web port every 30s, defined in the prometheus service
+  selector: # add the label on the service that we want to scrape in this selector
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics #Selects the prometheus Service to scrape
+
+
+#
+#Prometheus Operator abstracts away the implementation details of configuring Kubernetes service discovery
+#and scrapes targets using this ServiceMonitor resource. A ServiceMonitor defines a set of targets for
+#Prometheus to monitor and scrape.
