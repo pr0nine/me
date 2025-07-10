@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus #a Prometheus resource defined by Prometheus Operator controller
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  image: quay.io/prometheus/prometheus:v3.4.1
+  nodeSelector:
+    kubernetes.io/os: linux
+  replicas: 1
+  resources:
+    requests:
+      memory: 400Mi
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus #provide the serviceAccountName from ./prom_rbac.yaml
+  serviceMonitorNamespaceSelector:
+    matchLabels: #setting this to a namespace will prevent prom from hunting for svcmonitors
+      kubernetes.io/metadata.name: default
+      kubernetes.io/metadata.name: kube-system
+  serviceMonitorSelector: {} # used to pick up all the svcmonitors from the above namespace
+  version: v3.4.1
+#
+#This Prometheus resource encodes domain-specific Prometheus configuration into a set of readily
+#configurable YAML fields. Instead of managing Prometheus configuration files and learn Prometheus
+#configuration syntax, you can toggle many important configuration parameters by modifying 
+#Prometheus object variables in a Kubernetes manifest.
+
+
