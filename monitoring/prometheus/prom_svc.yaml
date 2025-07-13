@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  ports:
+  - name: web #used as an end point in the ServiceMonitor 
+    port: 9090
+    targetPort: web #forwards to the prometheus pod at the default web port of 9090
+  selector:
+    app.kubernetes.io/name: prometheus
+  sessionAffinity: ClientIP #ensures that connection from a particular client get forwarded to the same pod
