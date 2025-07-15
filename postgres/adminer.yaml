@@ -37,6 +37,9 @@ spec:
         ports:
         - containerPort: 8080
           name: adminer
+        env:
+        - name: TZ
+          value: "Asia/Kolkata"
         volumeMounts:
         - name: theme
           mountPath: /var/www/html/adminer.css
