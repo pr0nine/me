@@ -1,3 +1,5 @@
+pihole
+-------
 a custom container image containing pihole and unbound which is a recursive dns server works by recursively hunting through the top-level domains (TLD)s of an url to reach the ip           
 
 in docker this image runs fine but in kubernetes pihole fails to resolve DNS means it can't reach unbound, upon troubleshooting I found out local nameserver record is missing from `/etc/resolv.conf` in the container due overridden by coredns, so add the line below in the `entrypoint.sh` script
