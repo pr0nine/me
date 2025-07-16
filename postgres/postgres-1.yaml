@@ -9,7 +9,7 @@ data:
     # "local" is for Unix domain socket connections only
     local   all             all                                     trust
     # IPv4 local connections:
-    host    all             all             127.0.0.1/32            trust
+    host    all             all             192.168.29.0/24         password
     # IPv6 local connections:
     host    all             all             ::1/128                 trust
     # Allow replication connections from localhost, by a user with the
@@ -31,9 +31,9 @@ data:
     dynamic_shared_memory_type = posix
     max_wal_size = 1GB
     min_wal_size = 80MB
-    log_timezone = 'Etc/UTC'
+    log_timezone = 'Asia/kolkata'
     datestyle = 'iso, mdy'
-    timezone = 'Etc/UTC'
+    timezone = 'Asia/kolkata'
 
     #locale settings
     lc_messages = 'en_US.utf8'			# locale for system error message
@@ -83,6 +83,8 @@ spec:
             mkdir -p /data/archive && chown -R 999:999 /data/archive
           fi
         env:
+        - name: TZ
+          value: "Asia/Kolkata"
         - name: STANDBY_MODE
           value: "on"
         - name: PRIMARY_SERVER_ADDRESS
@@ -112,7 +114,10 @@ spec:
         ports:
         - containerPort: 5432
           name: database
+          hostPort: 5432
         env:
+        - name: TZ
+          value: "Asia/Kolkata"
         - name: PGDATA
           value: "/data/pgdata"
         - name: POSTGRES_USER
