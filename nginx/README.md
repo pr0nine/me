@@ -1,3 +1,6 @@
+nginx
+-------
+
 for deploying the nginx reverse proxy at first create the nginx.conf file stating which domain to listen and pass traffic,
 
 now using this configuration file create a configmap
