@@ -26,6 +26,9 @@ spec:
         - name: config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
+        env:
+        - name: TZ
+          value: "Asia/Kolkata"
       volumes:
       - name: config
         configMap:
