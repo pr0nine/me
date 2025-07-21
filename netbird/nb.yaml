@@ -1,0 +1,48 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netbird
+  namespace: default
+  labels:
+    app: netbird
+spec:
+  selector:
+    matchLabels:
+      app: netbird
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container:  netbird
+      labels:
+        app: netbird
+    spec:
+      containers:
+      - name: netbird
+        image: netbirdio/netbird:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "Asia/Kolkata"
+        - name: NB_SETUP_KEY
+          value: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx" #put the obtained setup key here 
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_ADMIN
+            - SYS_RESOURCE
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
