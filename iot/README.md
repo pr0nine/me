@@ -153,18 +153,37 @@ The system is composed of four main parts: the sensor node, the database, the vi
 
 1.  Connect to the database which we want to use and run the following SQL command to create the table for storing sensor data:
     
-
-```text-plain
-CREATE TABLE esp (
-    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    n SERIAL PRIMARY KEY,
-    tempo REAL,
-    humidity REAL,
-    voltage REAL,
-    current REAL,
-    watt REAL
-);
-```
+    ```text-plain
+    CREATE TABLE esp (
+        ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        n SERIAL PRIMARY KEY,
+        tempo REAL,
+        humidity REAL,
+        voltage REAL,
+        current REAL,
+        watt REAL
+    );
+    ```
+    
+2.  Create a correction function to calibrate the sensors if readings are not accurate 
+    
+    ```text-x-sql
+    CREATE OR REPLACE FUNCTION volt_correction()
+    RETURNS TRIGGER AS $$
+    BEGIN
+       IF NEW.voltage > 20 THEN
+       NEW.voltage := NEW.voltage - 20; -- add or substract to calibrate
+       END IF;
+       RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    CREATE TRIGGER correction
+    BEFORE INSERT ON esp
+    FOR EACH ROW
+    EXECUTE FUNCTION volt_correction();
+    ```
+    
 
 ### **Step 3: ESP8266 Firmware**
 
@@ -210,7 +229,7 @@ CREATE TABLE esp (
 
 ### **Step 4: Sinric Pro Setup**
 
-1.  Log in to your [Sinric Pro](https://www.google.com/search?q=https://portal.sinric.pro/) account.
+1.  Log in to your [Sinric Pro](https://portal.sinric.pro/) account.
     
 2.  Go to **Devices** and click **Add Device**.
     
