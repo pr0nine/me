@@ -1,11 +1,11 @@
 **IOT HUB**
+-----------
 
 This project transforms a simple ESP8266 microcontroller into a powerful smart hub for monitoring household environmental conditions and AC power consumption. It reads data from temperature, humidity, voltage, and current sensors, logs the data to a PostgreSQL database, and visualizes it in real-time using Grafana.
 
 Furthermore, it integrates with **Sinric Pro** to provide seamless smart home control via the Sinric Pro app, Google Home, and Amazon Alexa.
 
-**Features**
-------------
+### **Features**
 
 *   **Real-time Monitoring**: Continuously tracks ambient temperature, humidity, AC line voltage, and current.
     
@@ -22,8 +22,7 @@ Furthermore, it integrates with **Sinric Pro** to provide seamless smart home co
     3.  **On/Off Switch**: Uses another digital pin of esp8266 to generate a high or low signal can be hooked up to a relay or other switching device.
         
 
-**System Architecture**
------------------------
+### **System Architecture**
 
 The system is composed of four main parts: the sensor node, the database, the visualization platform, and the smart home service.
 
@@ -54,8 +53,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
 +-------------------+      +----------------+      +------------------+
 ```
 
-**1\. Hardware Requirements**
------------------------------
+### **1\. Hardware Requirements**
 
 |     |     |     |
 | --- | --- | --- |
@@ -66,10 +64,9 @@ The system is composed of four main parts: the sensor node, the database, the vi
 | **12V Power Supply** | To power the project | Powering the circuit. |
 | **D4184 Module**    or | Solid-state relay replacement designed for efficient switching of DC loads | For switching functionality. |
 | **Dimmer Module + Relay module** | An AC light dimmer module controllable by a PWM signal. and a relay module for switching ac loads | For the Dimmable and on/off Switch functionality. |
-| **MP1584 Buck module + AMS117 3.3v** | Mini MP1584 DC-DC Adjustable Buck module set to 5v | Paired with some decoupling caps for powering the esp8266. |
+| **MP1584 Buck module + AMS1117 3.3v** | Mini MP1584 DC-DC Adjustable Buck module set to 5v | Paired with some decoupling caps for powering the esp8266. |
 
-**2\. Software & Services**
----------------------------
+### **2\. Software & Services**
 
 *   **Arduino IDE** or **PlatformIO**: For compiling and uploading the firmware to the ESP8266.
     
@@ -80,41 +77,42 @@ The system is composed of four main parts: the sensor node, the database, the vi
 *   **Sinric Pro Account**: A free account is required.
     
 
-**3\. Setup & Installation**
-----------------------------
+### **3\. Setup & Installation**
 
-### **Step 1: Hardware Wiring**
+#### **Step 1: Hardware Wiring**
 
 1.  **DHT Sensor**:
     
-    *   VCC to 3.3V
+    1.  VCC to 3.3V
         
-    *   GND to GND
+    2.  GND to GND
         
-    *   DATA to GPIO5 ( D1 ).
+    3.  DATA to GPIO5 ( D1 ).
         
     
-    Now unfortunately the esp8266 have only one analog input A0 so to gather both of the sensor's data we can use a multiplexer but I have used a silly diy route using two PNP BJTs to switch each sensors and a diode on their output to stop signal mixing, and the esp8266 have input range between 0 to 1 volt so used a voltage divider consisting of 220k ohm and 125k ohm resistors smaller one for the gnd side with compensating voltage drop created by diode.
+    Now unfortunately the esp8266 have only one analog input A0 so to gather both of the sensor's data we can use a multiplexer but I have used a silly diy route using two PNP BJTs to switch each sensors and a diode on their output to stop signal mixing, and the esp8266 12f module have input range between 0 to 1 volt so used a voltage divider consisting of 220k ohm and 125k ohm resistors smaller one for the gnd side with compensating voltage drop created by diode, this voltage divider is already present in dev boards such as nodemcu.
     
 2.  **ZMPT101B Sensor** :
     
-    *   Connect the AC lines through the measuring transformer as per the module's diagram.
+    1.  Connect the AC lines through the measuring transformer as per the module's diagram.
         
-    *   VCC to output of transistor.
+    2.  VCC to collector of transistor.
         
-    *   GND to GND.
+    3.  GND to GND.
         
-    *   Output to positive terminal of a diode to the voltage divider.
+    4.  Output to positive terminal of a diode to the voltage divider.
         
 3.  **ACS712 30A Sensor** :
     
     1.  Connect the AC lines through the current sensors load terminals as per the module's diagram.
         
-    2.  VCC to output of transistor.
+    2.  VCC to collector of transistor.
         
     3.  GND to GND.
         
     4.  Output to positive terminal of a diode to the voltage divider.
+        
+        !\[Circuit diagram\](cct.jpeg)
         
 4.  **D4184 Module**:
     
@@ -130,26 +128,40 @@ The system is composed of four main parts: the sensor node, the database, the vi
         
 5.  **Relay Module (On/Off Switch)** if not using **D4184** module:
     
-    *   VCC to 5V.
+    1.  VCC to 5V.
         
-    *   GND to GND.
+    2.  GND to GND.
         
-    *   IN to GPIO14 ( D5 ).
+    3.  IN to GPIO14 ( D5 ).
         
 6.  **Dimmer Module** if not using **D4184** module:
     
-    *   Connect AC lines as per module instructions.
+    1.  Connect AC lines as per module instructions.
         
-    *   VCC to 5V.
+    2.  VCC to 5V.
         
-    *   GND to GND.
+    3.  GND to GND.
         
-    *   PWM/Control Pin to GPIO4 ( D2 ).
+    4.  PWM/Control Pin to GPIO4 ( D2 ).
         
+7.  **Power supply** : 
+    
+    1.   12v from dc jack to input of MP1584 Buck module set to 5v 
+        
+    2.  Output of MP1584 Buck module to input of ams1117 3.3v voltage regulator 
+        
+    3.  Output of ams1117 to esp8266 skip voltage regulator if using a dev board
+        
+    4.  Add Decoupling capacitors on inputs and outputs
+        
+
+!\[image alt\](cd.jpeg)
+
+!\[Complete Product\](cp.jpeg)
 
 **⚠️ CAUTION:** Working with mains AC voltage is dangerous. Ensure you know what you are doing and take all necessary safety precautions. If you are unsure, consult a professional.
 
-### **Step 2: Database Setup (PostgreSQL)**
+#### **Step 2: Database Setup (PostgreSQL)**
 
 1.  Connect to the database which we want to use and run the following SQL command to create the table for storing sensor data:
     
@@ -185,7 +197,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
     ```
     
 
-### **Step 3: ESP8266 Firmware**
+#### **Step 3: ESP8266 Firmware**
 
 1.  **Install Libraries**: In your Arduino IDE, install the following libraries from the Library Manager:
     
@@ -227,7 +239,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
 3.  **Upload Firmware**: Select your ESP8266 board in the Arduino IDE, choose the correct COM port, and upload the sketch.
     
 
-### **Step 4: Sinric Pro Setup**
+#### **Step 4: Sinric Pro Setup**
 
 1.  Log in to your [Sinric Pro](https://portal.sinric.pro/) account.
     
@@ -244,7 +256,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
 4.  Go to the **Credentials** tab and copy your App Key and App Secret into the firmware.
     
 
-### **Step 5: Grafana Setup**
+#### **Step 5: Grafana Setup**
 
 1.  Install and run Grafana on your server.
     
