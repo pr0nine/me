@@ -112,7 +112,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
         
     4.  Output to positive terminal of a diode to the voltage divider.
         
-        !\[Circuit diagram\](cct.jpeg)
+        !\[Circuit diagram\](https://github.com/pr0nine/me/blob/a7156f77bfd5dab9e2f24cadc0e2659759d64aa4/iot/cct.jpeg)
         
 4.  **D4184 Module**:
     
