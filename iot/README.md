@@ -155,7 +155,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
     4.  Add Decoupling capacitors on inputs and outputs
         
 
-[!\[image alt\](cd.jpeg)](https://github.com/pr0nine/me/blob/821124aef381486dfec31ae5137c151eaa65f45c/iot/cd.jpeg)
+![Image](https://github.com/user-attachments/assets/ecf564d8-22e0-482a-9f82-168ee74a8c97)
 
 !\[Complete Product\](cp.jpeg)
 
