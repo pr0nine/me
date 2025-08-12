@@ -157,7 +157,7 @@ The system is composed of four main parts: the sensor node, the database, the vi
 
 ![Image](https://github.com/user-attachments/assets/ecf564d8-22e0-482a-9f82-168ee74a8c97)
 
-!\[Complete Product\](cp.jpeg)
+![Complete Product](https://github.com/user-attachments/assets/687891b5-9b38-4a91-81b5-482bb55c5cdc)
 
 **⚠️ CAUTION:** Working with mains AC voltage is dangerous. Ensure you know what you are doing and take all necessary safety precautions. If you are unsure, consult a professional.
 
