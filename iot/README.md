@@ -286,3 +286,4 @@ The system is composed of four main parts: the sensor node, the database, the vi
     ```
     
     *   Customize the visualization type (e.g., Time series) and repeat for humidity, voltage, current and power(watt).
+<img width="1907" height="966" alt="Image" src="https://github.com/user-attachments/assets/1c3b768a-f962-4751-870e-231d31fcf0d7" />   
