@@ -1,5 +1,5 @@
-🚀 Overview
------------
+🚀 me
+-----
 
 This home lab 🏡 leverages **Kubernetes** to orchestrate containers and manage services, with a little bit internet of things sprinkled :
 
@@ -8,8 +8,7 @@ This home lab 🏡 leverages **Kubernetes** to orchestrate containers and manage
 *   Monitoring and observability
 *   Internet Of Things (IOT)
 
-🧰 Core Technologies
---------------------
+### 🧰 Core Technologies
 
 | Component | Tool/Stack |
 | --- | --- |
@@ -23,8 +22,7 @@ This home lab 🏡 leverages **Kubernetes** to orchestrate containers and manage
 | DNS | CoreDNS, Pi-hole + Unbound |
 | Dashboard | Grafana |
 
-🏗️ Architecture
-----------------
+### 🏗️ Architecture
 
 ```text-plain
 +-------------------+
@@ -44,13 +42,11 @@ This home lab 🏡 leverages **Kubernetes** to orchestrate containers and manage
 +------------------+
 ```
 
-📦 Deployed Services
---------------------
+### 📦 Deployed Services
 
 | App | Purpose |
 | --- | --- |
 | Pi-hole | Ad blocker DNS |
-| Jellyfin | Media server |
 | Postgres | Database for services |
 | Trilium | Note taking and knowledge base |
 | Uptime Kuma | Monitoring endpoints and alerting |
@@ -60,17 +56,16 @@ This home lab 🏡 leverages **Kubernetes** to orchestrate containers and manage
 | Adminer | UI for managing Postgres |
 | NetBird | VPN Tunnel for remote access |
 
-🛠️ Installation
-----------------
+### 🛠️ Installation
 
-### Pre-Requisites:
+#### Pre-Requisites:
 
 *   Linux-based machines or VMs
 *   Basic networking
 *   [kubectl](https://kubernetes.io/docs/tasks/tools/)
 *   [k3s](https://k3s.io/) or Kubernetes installed
 
-### Basic Setup:
+#### Basic Setup:
 
 ```text-x-sh
 # Install k3s run as root
@@ -80,25 +75,21 @@ curl -sfL https://get.k3s.io | sh -
 kubectl get nodes
 ```
 
-🔐 Security Practices
----------------------
+### 🔐 Security Practices
 
 *   Network policies for pod isolation
 *   Regular image updates
 
-📈 Monitoring
--------------
+### 📈 Monitoring
 
 *   **Prometheus**: Metrics collection
 *   **Grafana**: Dashboards for CPU, memory, disk, and services
 *   **Uptime Kuma**: HTTP checks and alerts
 
-🌐 IOT
-------
+### 🌐 IOT
 
 Go to the iot directory for full description [click here](https://github.com/pr0nine/me/tree/eff595dfc4e200690e1935b37283c41279e691f1/iot)
 
-📜 License
-----------
+### 📜 License
 
 This project is for personal use. Use at your own risk. No warranty provided.
