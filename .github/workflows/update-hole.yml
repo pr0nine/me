@@ -1,0 +1,83 @@
+name: 🚀 Check for Upstream Pi-hole Release
+
+on:
+  # Run on a schedule (e.g., every 6 hours)
+  schedule:
+    - cron: '0 0 1 * *'
+  
+  # Allow manual triggering from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      # This output will be 'true' if a new version is found
+      new_version_found: ${{ steps.check.outputs.new_version }}
+      # This output will be the new version tag
+      new_version_tag: ${{ steps.get_latest.outputs.tag }}
+      # This output will be the old version tag
+      old_version_tag: ${{ steps.get_current.outputs.tag }}
+
+    steps:
+      - name: ⬇️ Check out your repository
+        uses: actions/checkout@v4
+
+      - name: 🔎 Get current version from your repo
+        id: get_current
+        run: |
+          # Assumes you have a file named '.pihole-version' in your repo
+          CURRENT_VERSION=$(sed -n 's/^[[:space:]]*image:[[:space:]]*[^:]*:\(.*\)/\1/p' pihole/pihole.yaml)
+          echo "Current version: $CURRENT_VERSION"
+          echo "tag=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: 🌎 Get latest Pi-hole release
+        id: get_latest
+        run: |
+          # Fetches the latest release from the pi-hole/docker-pi-hole repo, jq is json processor -r for string conversion
+          LATEST_VERSION=$(curl -s "https://api.github.com/repos/pi-hole/docker-pi-hole/releases/latest" | jq -r .tag_name) 
+          echo "Latest upstream version: $LATEST_VERSION"
+          echo "tag=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: ↔️ Compare versions
+        id: check
+        run: |
+          if [ "${{ steps.get_current.outputs.tag }}" != "${{ steps.get_latest.outputs.tag }}" ]; then
+            echo "New version found: ${{ steps.get_latest.outputs.tag }}"
+            echo "new_version=true" >> $GITHUB_OUTPUT
+          else
+            echo "You are on the latest version."
+            echo "new_version=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-and-push:
+    # This job depends on the 'check-version' job finishing first
+    needs: check-version
+    
+    # CRITICAL: This 'if' statement ensures this job ONLY runs if the output was 'true'
+    if: needs.check-version.outputs.new_version_found == 'true'
+    
+    runs-on: ubuntu-22.04-arm64
+    
+    steps:
+      - name: ⬇️ Check out your repository
+        uses: actions/checkout@v4
+
+      - name: 🐳 Run your custom Docker build
+        run: |
+          echo "Building new image for: ${{ needs.check-version.outputs.new_version_tag }}"
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
+          docker build --tag pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
+          docker push pr0nine/pihole:${{ needs.check-version.outputs.new_version_tag }}
+          #
+
+      - name: ✍️ Update pihole-version in pihole.yaml
+        run: |
+          # Updates the file in your repo with the new version tag
+          sed -i 's|pr0nine/pihole:${{ needs.check-version.outputs.old_version_tag }}|pr0nine/pihole:${{ needs.check-version.outputs.new_version_tag }}|g' pihole/pihole.yaml
+
+      - name: ⬆️ Commit new version file
+        uses: devops-infra/action-commit-push@v1.0.3
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          commit_message: "Pi-hole image updated"
