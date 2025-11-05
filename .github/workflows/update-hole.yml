@@ -57,7 +57,7 @@ jobs:
     # CRITICAL: This 'if' statement ensures this job ONLY runs if the output was 'true'
     if: needs.check-version.outputs.new_version_found == 'true'
     
-    runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-22.04-arm
     
     steps:
       - name: ⬇️ Check out your repository
