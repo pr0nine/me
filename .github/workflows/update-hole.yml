@@ -67,8 +67,8 @@ jobs:
         run: |
           echo "Building new image for: ${{ needs.check-version.outputs.new_version_tag }}"
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
-          docker build --tag docker.io/${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
-          docker push docker.io/${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }}
+          docker build --tag ${{ secrets.DOCKER_USER }}/pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
+          docker push ${{ secrets.DOCKER_USER }}/pihole:${{ needs.check-version.outputs.new_version_tag }}
 
       - name: ✍️ Update pihole-version in pihole.yaml
         run: |
