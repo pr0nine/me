@@ -26,7 +26,7 @@ jobs:
       - name: 🔎 Get current version from your repo
         id: get_current
         run: |
-          # Assumes you have a file named '.pihole-version' in your repo
+          # From pihole/pihole.yaml 
           CURRENT_VERSION=$(sed -n 's/^[[:space:]]*image:[[:space:]]*[^:]*:\(.*\)/\1/p' pihole/pihole.yaml)
           echo "Current version: $CURRENT_VERSION"
           echo "tag=$CURRENT_VERSION" >> $GITHUB_OUTPUT
@@ -67,12 +67,12 @@ jobs:
         run: |
           echo "Building new image for: ${{ needs.check-version.outputs.new_version_tag }}"
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
-          docker build --tag ${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
-          docker push ${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }}
+          docker build --tag docker.io/${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
+          docker push docker.io/${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }}
 
       - name: ✍️ Update pihole-version in pihole.yaml
         run: |
-          # Updates the file in your repo with the new version tag
+          # Updates the file in repo with the new version tag
           sed -i 's|pr0nine/pihole:${{ needs.check-version.outputs.old_version_tag }}|pr0nine/pihole:${{ needs.check-version.outputs.new_version_tag }}|g' pihole/pihole.yaml
 
       - name: ⬆️ Commit new version file
