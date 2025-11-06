@@ -3,7 +3,7 @@ name: 🚀 Check for Upstream Pi-hole Release
 on:
   # Run on a schedule (e.g., every 6 hours)
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: '0 4 1 * *'
   
   # Allow manual triggering from the Actions tab
   workflow_dispatch:
@@ -67,9 +67,8 @@ jobs:
         run: |
           echo "Building new image for: ${{ needs.check-version.outputs.new_version_tag }}"
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
-          docker build --tag pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
-          docker push pr0nine/pihole:${{ needs.check-version.outputs.new_version_tag }}
-          #
+          docker build --tag ${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }} pihole
+          docker push ${{ secrets.DOCKER_USERNAME }}/pihole:${{ needs.check-version.outputs.new_version_tag }}
 
       - name: ✍️ Update pihole-version in pihole.yaml
         run: |
