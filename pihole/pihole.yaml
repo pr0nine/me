@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: pihole
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         image: pr0nine/pihole:2025.11.1
         ports:
         - containerPort: 80
