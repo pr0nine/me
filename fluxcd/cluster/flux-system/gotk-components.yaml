@@ -10109,7 +10109,7 @@ metadata:
   name: notification-controller
   namespace: flux-system
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: notification-controller
