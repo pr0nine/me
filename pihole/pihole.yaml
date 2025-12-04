@@ -39,7 +39,11 @@ spec:
         - name: TZ
           value: "Asia/Kolkata"
         - name: FTLCONF_webserver_api_password
-          value: "yourpasswd"
+          valueFrom:
+            secretKeyRef:
+              name: pihole
+              key: FTLCONF_webserver_api_password
+              optional: false
         - name: FTLCONF_dns_listeningMode
           value: "all"
         - name: FTLCONF_dns_upstreams #setting unbound as upstream dns server
