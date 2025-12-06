@@ -1,0 +1,12 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pi-hole
+  namespace: default
+spec:
+  interval: 15m
+  path: "./pihole/"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: me
