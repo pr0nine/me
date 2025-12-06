@@ -16,8 +16,8 @@ This home lab 🏡 leverages **Kubernetes** to orchestrate containers and manage
 | Orchestration | Kubernetes ~k3s |
 | Networking | Ingress-TRAEFIK |
 | Storage | ~hostPath for now |
-| GitOps | ~coming soon |
-| CI/CD | ~coming soon |
+| GitOps | ~FluxCD |
+| CI/CD | ~GithubActions + FluxCD |
 | Monitoring | Prometheus + UptimeKuma |
 | DNS | CoreDNS, Pi-hole + Unbound |
 | Dashboard | Grafana |
