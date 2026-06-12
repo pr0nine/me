@@ -31,7 +31,11 @@ spec:
         - name: TZ
           value: "Asia/Kolkata"
         - name: NB_SETUP_KEY
-          value: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx" #put the obtained setup key here 
+          valueFrom:
+            secretKeyRef:
+              name: netbird
+              key: NB_KEY
+              optional: false
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
