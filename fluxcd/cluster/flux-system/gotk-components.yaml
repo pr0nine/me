@@ -5002,6 +5002,7 @@ metadata:
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/version: v2.8.8
   name: alerts.notification.toolkit.fluxcd.io
+  namespace: flux-system
 spec:
   group: notification.toolkit.fluxcd.io
   names:
