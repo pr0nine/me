@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: netbird
-        image: netbirdio/netbird:latest # {"$imagepolicy": "flux-system:netbird-latest"}
+        image: netbirdio/netbird:0.74.0 # {"$imagepolicy": "flux-system:netbird-latest"}
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
