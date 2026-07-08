@@ -15,10 +15,10 @@ jobs:
       - name: 🔎 Get current version from your repo
         id: get_current
         run: |
-          # From netbird/nb.yaml 
-          CURRENT_VERSION=$(sed -n 's/^[[:space:]]*image:[[:space:]]*[^:]*:\(.*\)/\1/p' netbird/nb.yaml)
+          CURRENT_VERSION=$(sed -n 's/^[[:space:]]*image:[[:space:]]*[^:]*:\(.*\)/\1/p' netbird/nb.yaml | tr -d '\r ')
           echo "Current version: $CURRENT_VERSION"
-          echo "tag=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
 
       - name: Fetch Latest NetBird Release
         id: get-version
@@ -26,21 +26,26 @@ jobs:
           # Query GitHub's API to find NetBird's absolute latest stable release tag
           LATEST_TAG=$(curl -s https://api.github.com/repos/netbirdio/netbird/releases/latest | jq -r '.tag_name | ltrimstr("v")')
           
-          if [ "$LATEST_TAG" == "null" ] || ["$LATEST_TAG" == "$CURRENT_VERSION"]; then
-            echo "ERROR: Failed to fetch release from GitHub API or no update came."
+          if [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ]; then
+            echo "ERROR: Failed to fetch release from GitHub API."
             exit 1
+          fi
+
+          if [ "$LATEST_TAG" == "$CURRENT_VERSION" ]; then
+            echo "NetBird is already up to date ($LATEST_TAG). No action needed."
+            exit 0
           fi
           
           echo "LATEST_VERSION=$LATEST_TAG" >> $GITHUB_ENV
           echo "Latest stable NetBird version found: $LATEST_TAG"
 
       - name: ✍️ Update netbird-version in nb.yaml
+        # This step will only run if the previous step didn't exit early
         run: |
-          # Updates the file in repo with the new version tag
-          sed -i 's|netbirdio/netbird:$CURRENT_VERSION|netbirdio/netbird:$LATEST_TAG|g' netbird/nb.yaml
+          sed -i "s|netbirdio/netbird:$CURRENT_VERSION|netbirdio/netbird:$LATEST_VERSION|g" netbird/nb.yaml
 
       - name: ⬆️ Commit new version file
         uses: devops-infra/action-commit-push@v1.0.3
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
-          commit_message: "Netbird image updated"
+          commit_message: "chore(deps): update NetBird image to version ${{ env.LATEST_VERSION }}"
