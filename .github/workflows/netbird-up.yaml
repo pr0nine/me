@@ -48,4 +48,4 @@ jobs:
         uses: devops-infra/action-commit-push@v1.0.3
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
-          commit_message: "chore(deps): update NetBird image to version ${{ env.LATEST_VERSION }}"
+          commit_message: "update NetBird image to version ${{ env.LATEST_VERSION }}"
