@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: netbird
-        image: netbirdio/netbird:0.74.4
+        image: netbirdio/netbird:0.74.6
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
