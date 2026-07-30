@@ -33,14 +33,17 @@ jobs:
 
           if [ "$LATEST_TAG" == "$CURRENT_VERSION" ]; then
             echo "NetBird is already up to date ($LATEST_TAG). No action needed."
+            echo "new_version=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           
           echo "LATEST_VERSION=$LATEST_TAG" >> $GITHUB_ENV
+          echo "new_version=true" >> $GITHUB_OUTPUT
           echo "Latest stable NetBird version found: $LATEST_TAG"
 
       - name: ✍️ Update netbird-version in nb.yaml
         # This step will only run if the previous step didn't exit early
+        if: steps.get-version.outputs.new_version == 'true'
         run: |
           sed -i "s|netbirdio/netbird:$CURRENT_VERSION|netbirdio/netbird:$LATEST_VERSION|g" netbird/nb.yaml
 
