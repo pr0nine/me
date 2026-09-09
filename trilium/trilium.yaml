@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: trilium
-        image: zadam/trilium:latest
+        image: triliumnext/trilium:main
         env:
         - name: TRILIUM_PORT
           value: "8080"
