@@ -32,4 +32,18 @@ spec:
       resources:
         requests:
           storage: 4Gi
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: databasus-svc
+  labels:
+    app: databasus
+spec:
+  selector:
+    app: databasus
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4005
+      name: db-port
